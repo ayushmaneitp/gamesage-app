@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import os
 
 # Set red and black theme using custom CSS
 st.markdown("""
@@ -12,15 +11,6 @@ st.markdown("""
     }
     .stApp {
         background-color: #0d0d0d;
-    }
-    .main {
-        background-color: #0d0d0d;
-    }
-    .css-18e3th9 {
-        background-color: #0d0d0d;
-    }
-    .block-container {
-        padding: 2rem;
     }
     h1, h2, h3 {
         color: #e50914;
@@ -33,10 +23,13 @@ st.title("GameSage ⚡ | IPL Fantasy AI Engine")
 st.markdown("## Predict. Compare. Dominate.")
 st.markdown("GameSage uses AI to predict fantasy points and compare them to actual results from IPL 2023–24.")
 
-# Load comparison data
+# GitHub raw URL of your CSV
+csv_url = "https://raw.githubusercontent.com/itsyoko/gamesage-app/refs/heads/main/GameSage_Prediction_vs_Actual_Comparison%20(1).csv"
+
+# Load comparison data from GitHub
 @st.cache_data
-file_path = os.path.join(os.path.dirname(__file__), "GameSage_Prediction_vs_Actual_Comparison.csv")
-df = pd.read_csv(file_path)
+def load_data():
+    return pd.read_csv(csv_url)
 
 df = load_data()
 
