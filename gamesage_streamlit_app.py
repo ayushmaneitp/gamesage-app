@@ -10,26 +10,46 @@ squad_df = load_squad_data()
 
 # ========== FUNCTION: Generate Valid Predicted XI ==========
 def get_valid_predicted_xi(team_df):
-    wk = team_df[team_df['Role'].str.lower() == 'wicketkeeper']
-    bat = team_df[team_df['Role'].str.lower() == 'batter']
-    bowl = team_df[team_df['Role'].str.lower() == 'bowler']
-    allr = team_df[team_df['Role'].str.lower() == 'all-rounder']
-    
-    # Overseas filtering (customize this with real overseas player names if needed)
+    must_haves = {
+        "Mumbai Indians": ["Rohit Sharma", "Suryakumar Yadav", "Hardik Pandya", "Ishan Kishan", "Jasprit Bumrah"],
+        "Chennai Super Kings": ["Ruturaj Gaikwad", "MS Dhoni", "Ravindra Jadeja", "Rachin Ravindra"],
+        "Royal Challengers Bengaluru": ["Virat Kohli", "Faf du Plessis", "Glenn Maxwell", "Mohammed Siraj"],
+        "Kolkata Knight Riders": ["Shreyas Iyer", "Andre Russell", "Sunil Narine", "Rinku Singh"],
+        "Rajasthan Royals": ["Sanju Samson", "Yashasvi Jaiswal", "Jofra Archer"],
+        "Delhi Capitals": ["Rishabh Pant", "Kuldeep Yadav", "Axar Patel", "Mitchell Starc"],
+        "Punjab Kings": ["Shikhar Dhawan", "Sam Curran", "Liam Livingstone", "Arshdeep Singh"],
+        "Gujarat Titans": ["Shubman Gill", "Rashid Khan", "Mohammed Shami", "Jos Buttler"],
+        "Lucknow Super Giants": ["KL Rahul", "Marcus Stoinis", "Nicholas Pooran", "Ravi Bishnoi"],
+        "Sunrisers Hyderabad": ["Pat Cummins", "Heinrich Klaasen", "Travis Head", "Abhishek Sharma"]
+    }
+
+    franchise = team_df['Team'].iloc[0]
+    must_pick_names = must_haves.get(franchise, [])
+    must_pick = team_df[team_df["Player Name"].isin(must_pick_names)]
+
+    # Overseas logic
     overseas_keywords = ['Buttler', 'Klaasen', 'Livingstone', 'Russell', 'Narine', 'Head', 'Curran', 'Rabada', 'Conway', 'Ferguson', 'Zampa', 'Topley', 'Coetzee', 'Jansen', 'Archer']
     overseas_pool = team_df[team_df['Player Name'].str.contains('|'.join(overseas_keywords), case=False, na=False)]
     
-    wk_pick = wk.sample(1) if len(wk) >= 1 else pd.DataFrame()
-    overseas_pick = overseas_pool.sample(min(4, len(overseas_pool))) if not overseas_pool.empty else pd.DataFrame()
+    # Remove already selected from overseas pool
+    overseas_selected = must_pick[must_pick['Player Name'].isin(overseas_pool['Player Name'])]
+    overseas_remaining = overseas_pool.drop(index=overseas_selected.index, errors='ignore')
+    
+    overseas_needed = max(0, 4 - len(overseas_selected))
+    overseas_pick = overseas_remaining.sample(min(overseas_needed, len(overseas_remaining)), random_state=1)
 
-    remaining_spots = 11 - len(wk_pick) - len(overseas_pick)
-    rest_pool = team_df.drop(index=wk_pick.index if not wk_pick.empty else []).drop(index=overseas_pick.index if not overseas_pick.empty else [])
+    # Final assembly
+    selected = pd.concat([must_pick, overseas_pick])
+    remaining_pool = team_df.drop(index=selected.index, errors='ignore')
     
-    final_pick = pd.concat([wk_pick, overseas_pick])
-    if remaining_spots > 0 and not rest_pool.empty:
-        final_pick = pd.concat([final_pick, rest_pool.sample(min(remaining_spots, len(rest_pool)))])
-    
-    return final_pick.reset_index(drop=True)
+    if len(selected) < 11:
+        fill_count = 11 - len(selected)
+        filler = remaining_pool.sample(min(fill_count, len(remaining_pool)), random_state=1)
+        selected = pd.concat([selected, filler])
+
+    final_xi = selected.drop_duplicates(subset='Player Name').head(11).reset_index(drop=True)
+    final_xi.index = final_xi.index + 1  # Show 1-based index
+    return final_xi
 
 # ========== HERO SECTION ==========
 st.markdown("""
@@ -54,9 +74,9 @@ if franchise:
     team_squad = squad_df[squad_df["Team"] == franchise][["Player Name", "Role"]].reset_index(drop=True)
     st.dataframe(team_squad, use_container_width=True)
 
-    # ===== B. Predicted XI (Rules-based) =====
+    # ===== B. Predicted XI (Rules + Stars) =====
     st.subheader("🧠 Predicted XI for Next Match")
-    st.markdown("> Based on IPL rules: max 4 overseas, at least 1 WK, balanced roles.")
+    st.markdown("> Prioritizes key players, respects IPL rules (max 4 overseas, 1+ WK, balanced team).")
     predicted_xi = get_valid_predicted_xi(team_squad)
     st.table(predicted_xi)
 
