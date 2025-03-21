@@ -8,6 +8,29 @@ def load_squad_data():
 
 squad_df = load_squad_data()
 
+# ========== FUNCTION: Generate Valid Predicted XI ==========
+def get_valid_predicted_xi(team_df):
+    wk = team_df[team_df['Role'].str.lower() == 'wicketkeeper']
+    bat = team_df[team_df['Role'].str.lower() == 'batter']
+    bowl = team_df[team_df['Role'].str.lower() == 'bowler']
+    allr = team_df[team_df['Role'].str.lower() == 'all-rounder']
+    
+    # Overseas filtering (customize this with real overseas player names if needed)
+    overseas_keywords = ['Buttler', 'Klaasen', 'Livingstone', 'Russell', 'Narine', 'Head', 'Curran', 'Rabada', 'Conway', 'Ferguson', 'Zampa', 'Topley', 'Coetzee', 'Jansen', 'Archer']
+    overseas_pool = team_df[team_df['Player Name'].str.contains('|'.join(overseas_keywords), case=False, na=False)]
+    
+    wk_pick = wk.sample(1) if len(wk) >= 1 else pd.DataFrame()
+    overseas_pick = overseas_pool.sample(min(4, len(overseas_pool))) if not overseas_pool.empty else pd.DataFrame()
+
+    remaining_spots = 11 - len(wk_pick) - len(overseas_pick)
+    rest_pool = team_df.drop(index=wk_pick.index if not wk_pick.empty else []).drop(index=overseas_pick.index if not overseas_pick.empty else [])
+    
+    final_pick = pd.concat([wk_pick, overseas_pick])
+    if remaining_spots > 0 and not rest_pool.empty:
+        final_pick = pd.concat([final_pick, rest_pool.sample(min(remaining_spots, len(rest_pool)))])
+    
+    return final_pick.reset_index(drop=True)
+
 # ========== HERO SECTION ==========
 st.markdown("""
     <div style='text-align: center; padding: 2rem 1rem;'>
@@ -31,10 +54,10 @@ if franchise:
     team_squad = squad_df[squad_df["Team"] == franchise][["Player Name", "Role"]].reset_index(drop=True)
     st.dataframe(team_squad, use_container_width=True)
 
-    # ===== B. Predicted XI (Placeholder for now) =====
+    # ===== B. Predicted XI (Rules-based) =====
     st.subheader("🧠 Predicted XI for Next Match")
-    st.markdown("> _Powered soon by GameSage’s AI — based on form, match-ups, and more._")
-    predicted_xi = team_squad.sample(11, random_state=42)  # deterministic for demo
+    st.markdown("> Based on IPL rules: max 4 overseas, at least 1 WK, balanced roles.")
+    predicted_xi = get_valid_predicted_xi(team_squad)
     st.table(predicted_xi)
 
     # ===== C. Fan Engagement Zone =====
@@ -42,7 +65,7 @@ if franchise:
     st.markdown("""
     - 🗳️ Fan Poll: Who should captain the next match?
     - 🎯 Predict the MVP
-    - 💬 Share your playing XI (feature coming soon)
+    - 💬 Share your playing XI (coming soon!)
     """)
 
 # ========== FOOTER ==========
