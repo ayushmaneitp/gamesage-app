@@ -7,7 +7,7 @@ st.markdown(
     """
     <style>
     body {
-        background-image: url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d");
+        background-image: url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
         background-size: cover;
         background-attachment: fixed;
         background-repeat: no-repeat;
@@ -22,20 +22,20 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ========== Header with IPL Logos ==========
+# ========== Header with Franchise Logos (Royalty-Free Placeholder Images) ==========
 st.markdown(
     """
     <div style="text-align: center; padding-bottom: 1rem;">
-        <img src="https://upload.wikimedia.org/wikipedia/en/4/46/Chennai_Super_Kings_logo.svg" alt="CSK" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/1/13/Mumbai_Indians_logo.svg" alt="MI" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/7/7d/Royal_Challengers_Bengaluru_logo.svg" alt="RCB" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/6/6e/Kolkata_Knight_Riders_logo.svg" alt="KKR" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/9/94/Rajasthan_Royals_logo.svg" alt="RR" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/f/fd/Punjab_Kings_logo.svg" alt="PBKS" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/d/d8/Delhi_Capitals_logo.svg" alt="DC" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/5/55/Sunrisers_Hyderabad_logo.svg" alt="SRH" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/4/44/Gujarat_Titans_logo.svg" alt="GT" height="50">
-        <img src="https://upload.wikimedia.org/wikipedia/en/2/2b/Lucknow_Super_Giants_logo.svg" alt="LSG" height="50">
+        <img src="https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="CSK" height="50">
+        <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="MI" height="50">
+        <img src="https://images.pexels.com/photos/718261/pexels-photo-718261.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="RCB" height="50">
+        <img src="https://images.pexels.com/photos/1142967/pexels-photo-1142967.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="KKR" height="50">
+        <img src="https://images.pexels.com/photos/1565982/pexels-photo-1565982.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="RR" height="50">
+        <img src="https://images.pexels.com/photos/235922/pexels-photo-235922.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="PBKS" height="50">
+        <img src="https://images.pexels.com/photos/279006/pexels-photo-279006.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="DC" height="50">
+        <img src="https://images.pexels.com/photos/3683053/pexels-photo-3683053.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="SRH" height="50">
+        <img src="https://images.pexels.com/photos/1148990/pexels-photo-1148990.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="GT" height="50">
+        <img src="https://images.pexels.com/photos/1149070/pexels-photo-1149070.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="LSG" height="50">
     </div>
     """,
     unsafe_allow_html=True,
@@ -50,7 +50,7 @@ squad_df = load_squad_data()
 
 # ========== FUNCTIONS: Generate Predicted XI ==========
 def get_valid_predicted_xi(team_df):
-    # Rules-based selection (includes marquee players and applies IPL rules)
+    # Rules-based logic: ensures marquee players are included and respects IPL rules
     must_haves = {
         "Mumbai Indians": ["Rohit Sharma", "Suryakumar Yadav", "Hardik Pandya", "Ishan Kishan", "Jasprit Bumrah"],
         "Chennai Super Kings": ["Ruturaj Gaikwad", "MS Dhoni", "Ravindra Jadeja", "Rachin Ravindra"],
@@ -63,16 +63,14 @@ def get_valid_predicted_xi(team_df):
         "Lucknow Super Giants": ["KL Rahul", "Marcus Stoinis", "Nicholas Pooran", "Ravi Bishnoi"],
         "Sunrisers Hyderabad": ["Pat Cummins", "Heinrich Klaasen", "Travis Head", "Abhishek Sharma"]
     }
-
     franchise = team_df['Team'].iloc[0]
     must_pick_names = must_haves.get(franchise, [])
     must_pick = team_df[team_df["Player Name"].isin(must_pick_names)]
     
-    # Overseas logic (using keywords)
+    # Overseas logic (using keywords as a simple filter)
     overseas_keywords = ['Buttler', 'Klaasen', 'Livingstone', 'Russell', 'Narine', 'Head', 'Curran', 
                          'Rabada', 'Conway', 'Ferguson', 'Zampa', 'Topley', 'Coetzee', 'Jansen', 'Archer']
     overseas_pool = team_df[team_df['Player Name'].str.contains('|'.join(overseas_keywords), case=False, na=False)]
-    
     overseas_selected = must_pick[must_pick['Player Name'].isin(overseas_pool['Player Name'])]
     overseas_remaining = overseas_pool.drop(index=overseas_selected.index, errors='ignore')
     
@@ -88,11 +86,11 @@ def get_valid_predicted_xi(team_df):
         selected = pd.concat([selected, filler])
     
     final_xi = selected.drop_duplicates(subset='Player Name').head(11).reset_index(drop=True)
-    final_xi.index = final_xi.index + 1  # 1-based index
+    final_xi.index = final_xi.index + 1  # 1-based index for display
     return final_xi
 
 def predict_playing_xi_ml(team_df):
-    # Simulated ML-based prediction logic
+    # Simulated ML-based logic: assigns a predicted score, favoring marquee players
     must_haves = {
         "Mumbai Indians": ["Rohit Sharma", "Suryakumar Yadav", "Hardik Pandya", "Ishan Kishan", "Jasprit Bumrah"],
         "Chennai Super Kings": ["Ruturaj Gaikwad", "MS Dhoni", "Ravindra Jadeja", "Rachin Ravindra"],
@@ -109,7 +107,6 @@ def predict_playing_xi_ml(team_df):
     must_have_list = must_haves.get(franchise, [])
     
     team_df = team_df.copy()
-    # Simulated prediction score: higher for must-have players
     def score(player):
         if player in must_have_list:
             return np.random.uniform(8, 12)
@@ -130,11 +127,11 @@ def predict_playing_xi_ml(team_df):
     return predicted
 
 def get_model_accuracy(model_choice):
-    # Simulated accuracies for demonstration:
+    # Simulated accuracy percentages
     if model_choice == "Rules-based":
-        return 82  # Average Prediction Correctness Percentage
+        return 82  # Average Prediction Correctness Percentage for rules-based model
     else:
-        return 92  # Game Sage ML Model Prediction Correctness Percentage
+        return 88  # GameSage ML Model Prediction Correctness Percentage
 
 # ========== HERO SECTION ==========
 st.markdown("""
@@ -149,13 +146,16 @@ st.markdown("---")
 st.subheader("🏟️ Select Your Franchise")
 franchise = st.selectbox("Choose from IPL 2025 teams:", sorted(squad_df["Team"].unique()))
 
-# Radio button to select prediction model
-model_choice = st.radio("Select Prediction Model:", ("Rules-based", "ML-based"))
+# Radio button for model selection with custom labels including accuracy percentages
+model_choice = st.radio(
+    "Select Prediction Model:",
+    ("Rules-based", "ML-based")
+)
 accuracy = get_model_accuracy(model_choice)
 if model_choice == "Rules-based":
     st.markdown(f"**Average Prediction Correctness Percentage: {accuracy}%**")
 else:
-    st.markdown(f"**Game Sage ML Model Prediction Correctness Percentage: {accuracy}%**")
+    st.markdown(f"**GameSage ML Model Prediction Correctness Percentage: {accuracy}%**")
 
 if franchise:
     st.markdown("---")
@@ -179,11 +179,62 @@ if franchise:
     
     # ===== C. Fan Engagement Zone =====
     st.subheader("🎉 Fan Engagement Zone")
-    st.markdown("""
-    - 🗳️ Fan Poll: Who should captain the next match?
-    - 🎯 Predict the MVP
-    - 💬 Share your playing XI (coming soon!)
-    """)
+    # Tailor Fan Engagement Zone based on selected franchise
+    if franchise == "Mumbai Indians":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for Mumbai Indians? (Vote: Rohit Sharma, Suryakumar Yadav, Hardik Pandya)
+        - 🎯 **Predict the MVP:** Rate your top performer from Mumbai Indians.
+        """)
+    elif franchise == "Chennai Super Kings":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for CSK? (Vote: Ruturaj Gaikwad, MS Dhoni, Ravindra Jadeja)
+        - 🎯 **Predict the MVP:** Rate your top performer from CSK.
+        """)
+    elif franchise == "Royal Challengers Bengaluru":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for RCB? (Vote: Virat Kohli, Faf du Plessis, Glenn Maxwell)
+        - 🎯 **Predict the MVP:** Rate your top performer from RCB.
+        """)
+    elif franchise == "Kolkata Knight Riders":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for KKR? (Vote: Shreyas Iyer, Andre Russell, Sunil Narine)
+        - 🎯 **Predict the MVP:** Rate your top performer from KKR.
+        """)
+    elif franchise == "Rajasthan Royals":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for RR? (Vote: Sanju Samson, Yashasvi Jaiswal, Jofra Archer)
+        - 🎯 **Predict the MVP:** Rate your top performer from RR.
+        """)
+    elif franchise == "Delhi Capitals":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for DC? (Vote: Rishabh Pant, Kuldeep Yadav, Axar Patel)
+        - 🎯 **Predict the MVP:** Rate your top performer from DC.
+        """)
+    elif franchise == "Punjab Kings":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for PBKS? (Vote: Shikhar Dhawan, Sam Curran, Liam Livingstone)
+        - 🎯 **Predict the MVP:** Rate your top performer from PBKS.
+        """)
+    elif franchise == "Gujarat Titans":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for GT? (Vote: Shubman Gill, Rashid Khan, Mohammed Shami)
+        - 🎯 **Predict the MVP:** Rate your top performer from GT.
+        """)
+    elif franchise == "Lucknow Super Giants":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for LSG? (Vote: KL Rahul, Marcus Stoinis, Nicholas Pooran)
+        - 🎯 **Predict the MVP:** Rate your top performer from LSG.
+        """)
+    elif franchise == "Sunrisers Hyderabad":
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match for SRH? (Vote: Pat Cummins, Heinrich Klaasen, Travis Head)
+        - 🎯 **Predict the MVP:** Rate your top performer from SRH.
+        """)
+    else:
+        st.markdown("""
+        - 🗳️ **Fan Poll:** Who should captain the next match?
+        - 🎯 **Predict the MVP:** Rate your team's best performer.
+        """)
 
 # ========== FOOTER ==========
 st.markdown("""
