@@ -22,8 +22,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ========== Header with Franchise Logos (Placeholder royalty-free images) ==========
-# You can update these URLs to images that better represent each franchise/sport.
+# ========== Header with Franchise Logos ==========
 header_html = """
 <div style="text-align: center; padding-bottom: 1rem;">
     <img src="https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="CSK" height="50">
@@ -44,7 +43,6 @@ st.markdown(header_html, unsafe_allow_html=True)
 @st.cache_data
 def load_squad_data():
     return pd.read_excel("IPL_2025_Squads_Player_Team_Role_Only.xlsx")
-
 squad_df = load_squad_data()
 
 # ========== FUNCTIONS: Generate Predicted XI ==========
@@ -85,7 +83,7 @@ def get_valid_predicted_xi(team_df):
         selected = pd.concat([selected, filler])
     
     final_xi = selected.drop_duplicates(subset='Player Name').head(11).reset_index(drop=True)
-    final_xi.index = final_xi.index + 1  # Display with 1-based index
+    final_xi.index = final_xi.index + 1  # 1-based index for display
     return final_xi
 
 def predict_playing_xi_ml(team_df):
@@ -132,7 +130,8 @@ def get_model_accuracy(model_choice):
     else:
         return 88  # GameSage ML Model Prediction Correctness Percentage
 
-# ========== Fan Poll Options for Each Franchise ==========
+# ========== Fan Engagement Options ==========
+# For MVP selection, using the same options as before for demonstration
 fan_poll_options = {
     "Mumbai Indians": ["Rohit Sharma", "Suryakumar Yadav", "Hardik Pandya"],
     "Chennai Super Kings": ["Ruturaj Gaikwad", "MS Dhoni", "Ravindra Jadeja"],
@@ -159,7 +158,7 @@ st.markdown("---")
 st.subheader("🏟️ Select Your Franchise")
 franchise = st.selectbox("Choose from IPL 2025 teams:", sorted(squad_df["Team"].unique()))
 
-# Radio button for model selection with custom labels including accuracy percentages
+# Radio button for model selection with labels including simulated accuracy percentages
 model_choice = st.radio(
     "Select Prediction Model:",
     ("Rules-based", "ML-based")
@@ -192,12 +191,15 @@ if franchise:
     
     # ===== C. Fan Engagement Zone =====
     st.subheader("🎉 Fan Engagement Zone")
-    # Retrieve fan poll options for the selected franchise
-    options = fan_poll_options.get(franchise, ["Option 1", "Option 2", "Option 3"])
-    fan_poll = st.radio(f"Who should captain the next match for {franchise}?", options)
-    mvp_rating = st.slider(f"Rate the MVP for {franchise} (1-10):", 1, 10, 5)
-    if st.button("Submit Your Votes"):
-        st.success(f"Thank you for voting! You selected {fan_poll} as captain and rated the MVP {mvp_rating}/10.")
+    # Let fans select the MVP
+    mvp_options = fan_poll_options.get(franchise, ["Option 1", "Option 2", "Option 3"])
+    mvp_choice = st.radio(f"Who do you think will be the Most Valuable Player (MVP) for {franchise} today?", mvp_options)
+    
+    # Let fans predict the Power Play score using a slider
+    powerplay_score = st.slider(f"Predict the Power Play Score for {franchise} (runs):", 30, 120, 50)
+    
+    if st.button("Submit Your Predictions"):
+        st.success(f"Thank you for your predictions! You selected {mvp_choice} as MVP and predicted a power play score of {powerplay_score} runs. We'll celebrate accurate predictions after the match!")
     
 # ========== FOOTER ==========
 st.markdown("""
