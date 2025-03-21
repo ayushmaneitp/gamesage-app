@@ -1,3 +1,4 @@
+df = pd.read_excel("IPL_2025_Squads_Player_Team_Role_Only.xlsx")
 import streamlit as st
 
 # ========== LANDING BANNER ==========
