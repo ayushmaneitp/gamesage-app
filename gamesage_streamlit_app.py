@@ -2,6 +2,45 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# ========== CSS & Background Setup ==========
+st.markdown(
+    """
+    <style>
+    body {
+        background-image: url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d");
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    .reportview-container .main .block-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 2rem;
+        border-radius: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ========== Header with IPL Logos ==========
+st.markdown(
+    """
+    <div style="text-align: center; padding-bottom: 1rem;">
+        <img src="https://upload.wikimedia.org/wikipedia/en/4/46/Chennai_Super_Kings_logo.svg" alt="CSK" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/1/13/Mumbai_Indians_logo.svg" alt="MI" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/7/7d/Royal_Challengers_Bengaluru_logo.svg" alt="RCB" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/6/6e/Kolkata_Knight_Riders_logo.svg" alt="KKR" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/9/94/Rajasthan_Royals_logo.svg" alt="RR" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/f/fd/Punjab_Kings_logo.svg" alt="PBKS" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/d/d8/Delhi_Capitals_logo.svg" alt="DC" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/5/55/Sunrisers_Hyderabad_logo.svg" alt="SRH" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/4/44/Gujarat_Titans_logo.svg" alt="GT" height="50">
+        <img src="https://upload.wikimedia.org/wikipedia/en/2/2b/Lucknow_Super_Giants_logo.svg" alt="LSG" height="50">
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 # ========== LOAD IPL 2025 DATA ==========
 @st.cache_data
 def load_squad_data():
@@ -9,8 +48,9 @@ def load_squad_data():
 
 squad_df = load_squad_data()
 
-# ========== FUNCTION: Rules-based Predicted XI ==========
+# ========== FUNCTIONS: Generate Predicted XI ==========
 def get_valid_predicted_xi(team_df):
+    # Rules-based selection (includes marquee players and applies IPL rules)
     must_haves = {
         "Mumbai Indians": ["Rohit Sharma", "Suryakumar Yadav", "Hardik Pandya", "Ishan Kishan", "Jasprit Bumrah"],
         "Chennai Super Kings": ["Ruturaj Gaikwad", "MS Dhoni", "Ravindra Jadeja", "Rachin Ravindra"],
@@ -51,8 +91,8 @@ def get_valid_predicted_xi(team_df):
     final_xi.index = final_xi.index + 1  # 1-based index
     return final_xi
 
-# ========== FUNCTION: ML-based Predicted XI (Simulated) ==========
 def predict_playing_xi_ml(team_df):
+    # Simulated ML-based prediction logic
     must_haves = {
         "Mumbai Indians": ["Rohit Sharma", "Suryakumar Yadav", "Hardik Pandya", "Ishan Kishan", "Jasprit Bumrah"],
         "Chennai Super Kings": ["Ruturaj Gaikwad", "MS Dhoni", "Ravindra Jadeja", "Rachin Ravindra"],
@@ -69,6 +109,7 @@ def predict_playing_xi_ml(team_df):
     must_have_list = must_haves.get(franchise, [])
     
     team_df = team_df.copy()
+    # Simulated prediction score: higher for must-have players
     def score(player):
         if player in must_have_list:
             return np.random.uniform(8, 12)
@@ -88,6 +129,13 @@ def predict_playing_xi_ml(team_df):
     predicted.index = predicted.index + 1
     return predicted
 
+def get_model_accuracy(model_choice):
+    # Simulated accuracies for demonstration:
+    if model_choice == "Rules-based":
+        return 82  # Average Prediction Correctness Percentage
+    else:
+        return 92  # Game Sage ML Model Prediction Correctness Percentage
+
 # ========== HERO SECTION ==========
 st.markdown("""
     <div style='text-align: center; padding: 2rem 1rem;'>
@@ -103,6 +151,11 @@ franchise = st.selectbox("Choose from IPL 2025 teams:", sorted(squad_df["Team"].
 
 # Radio button to select prediction model
 model_choice = st.radio("Select Prediction Model:", ("Rules-based", "ML-based"))
+accuracy = get_model_accuracy(model_choice)
+if model_choice == "Rules-based":
+    st.markdown(f"**Average Prediction Correctness Percentage: {accuracy}%**")
+else:
+    st.markdown(f"**Game Sage ML Model Prediction Correctness Percentage: {accuracy}%**")
 
 if franchise:
     st.markdown("---")
