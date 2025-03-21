@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 # Set red and black theme using custom CSS
 st.markdown("""
@@ -34,7 +35,6 @@ st.markdown("GameSage uses AI to predict fantasy points and compare them to actu
 
 # Load comparison data
 @st.cache_data
-import os
 file_path = os.path.join(os.path.dirname(__file__), "GameSage_Prediction_vs_Actual_Comparison.csv")
 df = pd.read_csv(file_path)
 
