@@ -2,42 +2,42 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# ========== CSS & Background Setup ==========
-# st.markdown(
-#     """
-#     <style>
-#     # body {
-#     #     background-image: url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
-#     #     background-size: cover;
-#     #     background-attachment: fixed;
-#     #     background-repeat: no-repeat;
-#     # }
-#     .reportview-container .main .block-container {
-#         background-color: rgba(255, 255, 255, 0.9);
-#         padding: 2rem;
-#         border-radius: 10px;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True,
-# )
+========== CSS & Background Setup ==========
+st.markdown(
+    """
+    <style>
+    body {
+        background-image: url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    .reportview-container .main .block-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 2rem;
+        border-radius: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ========== Header with Franchise Logos ==========
-header_html = """
-<div style="text-align: center; padding-bottom: 1rem;">
-    <img src="https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="CSK" height="50">
-    <img src="https://images.pexels.com/photos/210186/pexels-photo-210186.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="MI" height="50">
-    <img src="https://images.pexels.com/photos/718261/pexels-photo-718261.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="RCB" height="50">
-    <img src="https://images.pexels.com/photos/1142967/pexels-photo-1142967.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="KKR" height="50">
-    <img src="https://images.pexels.com/photos/1565982/pexels-photo-1565982.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="RR" height="50">
-    <img src="https://images.pexels.com/photos/235922/pexels-photo-235922.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="PBKS" height="50">
-    <img src="https://images.pexels.com/photos/279006/pexels-photo-279006.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="DC" height="50">
-    <img src="https://images.pexels.com/photos/3683053/pexels-photo-3683053.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="SRH" height="50">
-    <img src="https://images.pexels.com/photos/1148990/pexels-photo-1148990.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="GT" height="50">
-    <img src="https://images.pexels.com/photos/1149070/pexels-photo-1149070.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="LSG" height="50">
-</div>
-"""
-st.markdown(header_html, unsafe_allow_html=True)
+# header_html = """
+# <div style="text-align: center; padding-bottom: 1rem;">
+#     <img src="https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="CSK" height="50">
+#     <img src="https://images.pexels.com/photos/210186/pexels-photo-210186.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="MI" height="50">
+#     <img src="https://images.pexels.com/photos/718261/pexels-photo-718261.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="RCB" height="50">
+#     <img src="https://images.pexels.com/photos/1142967/pexels-photo-1142967.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="KKR" height="50">
+#     <img src="https://images.pexels.com/photos/1565982/pexels-photo-1565982.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="RR" height="50">
+#     <img src="https://images.pexels.com/photos/235922/pexels-photo-235922.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="PBKS" height="50">
+#     <img src="https://images.pexels.com/photos/279006/pexels-photo-279006.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="DC" height="50">
+#     <img src="https://images.pexels.com/photos/3683053/pexels-photo-3683053.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="SRH" height="50">
+#     <img src="https://images.pexels.com/photos/1148990/pexels-photo-1148990.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="GT" height="50">
+#     <img src="https://images.pexels.com/photos/1149070/pexels-photo-1149070.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=50&w=50" alt="LSG" height="50">
+# </div>
+# """
+# st.markdown(header_html, unsafe_allow_html=True)
 
 # ========== LOAD IPL 2025 DATA ==========
 @st.cache_data
