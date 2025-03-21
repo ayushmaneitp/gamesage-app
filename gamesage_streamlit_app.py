@@ -6,12 +6,12 @@ import numpy as np
 st.markdown(
     """
     <style>
-    body {
-        background-image: url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
-        background-size: cover;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-    }
+    # body {
+    #     background-image: url("https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+    #     background-size: cover;
+    #     background-attachment: fixed;
+    #     background-repeat: no-repeat;
+    # }
     .reportview-container .main .block-container {
         background-color: rgba(255, 255, 255, 0.9);
         padding: 2rem;
