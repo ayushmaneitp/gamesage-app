@@ -148,7 +148,8 @@ fan_poll_options = {
 # ========== HERO SECTION ==========
 st.markdown("""
     <div style='text-align: center; padding: 2rem 1rem;'>
-        <h1 style='font-size: 3em; color: #FF6B00;'>Where Sports Meets Strategic Intelligence</h1>
+        <h1 style='font-size: 5em; text-align: center'>GameSage</h1>
+        <h2 style='font-size: 3em; color: #FF6B00;'>Where Sports Meets Strategic Intelligence</h2>
         <p style='font-size: 1.25em;'>From pitch to podium — GameSage empowers franchises with data-driven strategy, prediction, and fan connection.</p>
     </div>
 """, unsafe_allow_html=True)
