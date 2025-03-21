@@ -1,7 +1,14 @@
-df = pd.read_excel("IPL_2025_Squads_Player_Team_Role_Only.xlsx")
 import streamlit as st
+import pandas as pd
 
-# ========== LANDING BANNER ==========
+# ========== LOAD IPL 2025 DATA ==========
+@st.cache_data
+def load_squad_data():
+    return pd.read_excel("IPL_2025_Squads_Player_Team_Role_Only.xlsx")
+
+squad_df = load_squad_data()
+
+# ========== HERO SECTION ==========
 st.markdown("""
     <div style='text-align: center; padding: 2rem 1rem;'>
         <h1 style='font-size: 3em; color: #FF6B00;'>Where Sports Meets Strategic Intelligence</h1>
@@ -13,68 +20,34 @@ st.markdown("""
 st.markdown("---")
 st.subheader("🏟️ Select Your Franchise")
 
-franchise = st.selectbox(
-    "Choose from your league:",
-    [
-        "🏏 Kolkata Knight Riders (IPL)",
-        "🏏 Royal Challengers Bengaluru (IPL)",
-        "⚽ Mumbai City FC (ISL)",
-        "🏐 Jaipur Pink Panthers (PKL)"
-    ]
-)
+franchise = st.selectbox("Choose from IPL 2025 teams:", sorted(squad_df["Team"].unique()))
 
 if franchise:
     st.markdown("---")
-    st.header(f"📊 {franchise} Dashboard")
+    st.header(f"📊 {franchise} Owner Dashboard")
 
-    # ========== A. Squad Overview ==========
+    # ===== A. Squad Overview =====
     st.subheader("🧾 Current Squad")
-    st.markdown("""
-    - **Shreyas Iyer** (Batter) — Fit
-    - **Andre Russell** (All-rounder) — In Form 🔥
-    - **Sunil Narine** (All-rounder) — Fit
-    - **Mitchell Starc** (Bowler) — Fit
-    """)
+    team_squad = squad_df[squad_df["Team"] == franchise][["Player Name", "Role"]].reset_index(drop=True)
+    st.dataframe(team_squad, use_container_width=True)
 
-    # ========== B. Upcoming Fixtures ==========
-    st.subheader("📅 Upcoming Matches")
-    st.table({
-        "Opponent": ["RCB", "MI", "GT"],
-        "Date": ["Mar 22", "Mar 25", "Mar 29"],
-        "Venue": ["Eden Gardens", "Wankhede", "Narendra Modi Stadium"]
-    })
+    # ===== B. Predicted XI (Placeholder for now) =====
+    st.subheader("🧠 Predicted XI for Next Match")
+    st.markdown("> _Powered soon by GameSage’s AI — based on form, match-ups, and more._")
+    predicted_xi = team_squad.sample(11, random_state=42)  # deterministic for demo
+    st.table(predicted_xi)
 
-    # ========== C. Predicted Playing XI ==========
-    st.subheader("🧠 Predicted XI (Next Match vs RCB)")
-    st.markdown("""
-    - **Shreyas Iyer** — Avg: 56 pts — Selected for consistency
-    - **Russell** — Avg: 72 pts — Selected for finishing firepower
-    - **Narine** — Avg: 60 pts — Effective vs RCB middle order
-    - **Starc** — Avg: 48 pts — Match-up vs Kohli
-    """)
-
-    st.markdown("> _**Selection Logic:** Based on recent form, historical performance vs opponent, and match conditions._")
-
-    # ========== D. Key Team Stats ==========
-    st.subheader("📈 Season Stats Snapshot")
-    st.markdown("""
-    - **Win Rate:** 66%
-    - **Top Performer:** Andre Russell
-    - **Avg Fantasy Score (Team):** 812 pts/match
-    - **Most Impactful Player:** Sunil Narine (Avg 3 wickets/match)
-    """)
-
-    # ========== E. Fan Engagement Tools ==========
+    # ===== C. Fan Engagement Zone =====
     st.subheader("🎉 Fan Engagement Zone")
     st.markdown("""
-    - 🗳️ **Fan Poll:** Who should be captain next match?
-    - 🎯 Predict the top scorer vs RCB
-    - 📊 Fantasy League Integration (Coming soon)
+    - 🗳️ Fan Poll: Who should captain the next match?
+    - 🎯 Predict the MVP
+    - 💬 Share your playing XI (feature coming soon)
     """)
 
 # ========== FOOTER ==========
 st.markdown("""
-<div style='text-align: center; padding: 1rem;'>
-    <p style='font-size: 0.9em;'>Built by GameSage • Powered by AI • Made for Champions</p>
-</div>
+    <div style='text-align: center; padding: 1rem;'>
+        <p style='font-size: 0.9em;'>Built by GameSage • Powered by AI • Made for Champions</p>
+    </div>
 """, unsafe_allow_html=True)
