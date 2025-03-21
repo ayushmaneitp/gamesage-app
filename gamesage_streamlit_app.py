@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-========== CSS & Background Setup ==========
+# ========== CSS & Background Setup ==========
 st.markdown(
     """
     <style>
